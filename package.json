@@ -1,0 +1,41 @@
+{
+  "name": "course-rating-api",
+  "version": "1.0.0",
+  "description": "Backend for a course rating service built with node, redis, and mongodb.",
+  "main": "./src/server.js",
+  "scripts": {
+    "prestart": "npm run -s build",
+    "start": "node dist/server.js",
+    "clean": "rm -rf dist && mkdir dist",
+    "build-babel": "babel -d ./dist ./src -s",
+    "build": "npm run clean && npm run build-babel",
+    "dev": "nodemon --exec babel-node src/server.js",
+    "test": "jest --coverage"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/frankRose1/node-api-boilerplate"
+  },
+  "author": "Frank Rosendorf",
+  "license": "MIT",
+  "dependencies": {
+    "@hapi/joi": "^15.1.1",
+    "bcryptjs": "^2.4.3",
+    "bluebird": "^3.5.5",
+    "compression": "^1.7.3",
+    "cors": "^2.8.5",
+    "express": "^5.0.0-alpha.7",
+    "mongoose": "^5.6.11",
+    "redis": "^2.8.0"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.5.5",
+    "@babel/core": "^7.5.5",
+    "@babel/node": "^7.5.5",
+    "@babel/preset-env": "^7.5.5",
+    "babel-jest": "^24.9.0",
+    "jest": "^24.9.0",
+    "nodemon": "^1.19.2",
+    "supertest": "^4.0.2"
+  }
+}

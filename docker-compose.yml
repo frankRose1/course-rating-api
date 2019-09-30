@@ -1,0 +1,50 @@
+version: '2.4'
+
+services:
+  redis:
+    env_file:
+      - '.env'
+    image: 'redis:5.0.5-buster'
+    restart: '${DOCKER_RESTART_POLICY:-unless-stopped}'
+    stop_grace_period: '${DOCKER_STOP_GRACE_PERIOD:-3s}'
+    volumes:
+      - 'redis:/data'
+    healthcheck:
+      test: 'redis-cli ping'
+
+  mongo:
+    image: 'mongo'
+    env_file: .env
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=$MONGO_USERNAME
+      - MONGO_INITDB_ROOT_PASSWORD=$MONGO_PASSWORD
+    ports:
+      - '27017:27017'
+    volumes:
+      - 'mongo:/var/lib/mongo/data'
+    restart: '${DOCKER_RESTART_POLICY:-unless-stopped}'
+    stop_grace_period: '${DOCKER_STOP_GRACE_PERIOD:-3s}'
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongo localhost:27017/test --quiet
+
+  api:
+    build: .
+    command: npm run dev
+    env_file: '.env'
+    environment:
+      - MONGO_HOSTNAME=mongo
+    ports:
+      - '8000:8000'
+    restart: '${DOCKER_RESTART_POLICY:-unless-stopped}'
+    stop_grace_period: '${DOCKER_STOP_GRACE_PERIOD:-3s}'
+    depends_on:
+      redis:
+        condition: 'service_healthy'
+      mongo:
+        condition: 'service_healthy'
+    volumes:
+      - '.:/app'
+
+volumes:
+  redis: {}
+  mongo: {}
