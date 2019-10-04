@@ -21,7 +21,7 @@ services:
     ports:
       - '27017:27017'
     volumes:
-      - 'mongo:/var/lib/mongo/data'
+      - 'mongo:/data/db'
     restart: '${DOCKER_RESTART_POLICY:-unless-stopped}'
     stop_grace_period: '${DOCKER_STOP_GRACE_PERIOD:-3s}'
     healthcheck:
