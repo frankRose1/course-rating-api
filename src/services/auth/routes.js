@@ -8,27 +8,30 @@ export default [
     {
         path: '/api/auth',
         method: 'post',
-        handler: [
-            validateAuthCredentials,
-            async (req, res) => {
-                const { username, password } = req.body;
+        handler: async (req, res) => {
+            const { error, value } = validateAuthCredentials(req.body);
 
-                const user = await User.findOne({ username });
-
-                if (!user) {
-                    throw new HTTP400Error('Invalid username or password');
-                }
-
-                const isValidPassword = user.authenticate(password);
-
-                if (!isValidPassword) {
-                    throw new HTTP400Error('Invalid username or password');
-                }
-
-                const token = user.generateAuthToken();
-
-                res.json({ token });
+            if (error) {
+                throw new HTTP400Error(error.details);
             }
-        ]
+
+            const { username, password } = value;
+
+            const user = await User.findOne({ username });
+
+            if (!user) {
+                throw new HTTP400Error('Invalid username or password');
+            }
+
+            const isValidPassword = user.authenticate(password);
+
+            if (!isValidPassword) {
+                throw new HTTP400Error('Invalid username or password');
+            }
+
+            const token = user.generateAuthToken();
+
+            res.json({ token });
+        }
     }
 ]

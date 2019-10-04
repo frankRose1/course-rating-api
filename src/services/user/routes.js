@@ -12,12 +12,14 @@ export default [
             const { error, value } = validateCreateUser(req.body);
 
             if (error) {
-                throw new HTTP400Error(error.details)
+                throw new HTTP400Error(error.details);
             }
 
-            const user = new User(req.body);
+            const user = new User(value);
             await user.save()
-            res.sendStatus(201)
+            res
+              .location('/api/auth')
+              .sendStatus(201)
         }
     },
 ]
