@@ -15,8 +15,8 @@ export const applyMiddleware = (middleware, app) => {
  * @param {Object} app - express application
  */
 export const applyRoutes = (routes, app) => {
-    for (const route of routes) {
-        const { path, method, handler } = route
-        app[method](path, handler)
+    for (const router of routes) {
+        const { prefix, endpoints } = router;
+        app.use(prefix, endpoints);
     }
 }

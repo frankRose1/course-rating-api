@@ -12,5 +12,5 @@ export default (req, res, next) => {
             throw new HTTP400Error('The provided object ID is invalid.')
         }
 
-    next()
+    next();
 }

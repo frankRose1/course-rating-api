@@ -3,7 +3,7 @@ import middleware from './middleware';
 import './services/user/model';
 import './services/course/model';
 import './services/review/model';
-import routes from './services';
+import routes from './api';
 import errorHandlers from './middleware/errorHandlers';
 import {
     applyMiddleware,
