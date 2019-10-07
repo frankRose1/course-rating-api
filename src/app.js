@@ -1,6 +1,8 @@
 import express from 'express';
 import middleware from './middleware';
-import './services/user/model'
+import './services/user/model';
+import './services/course/model';
+import './services/review/model';
 import routes from './services';
 import errorHandlers from './middleware/errorHandlers';
 import {

@@ -1,4 +1,4 @@
-import Joi from '@hapi/joi'
+import Joi from '@hapi/joi';
 
 /**
  * Validate data needed to created an instance of a User

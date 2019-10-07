@@ -2,7 +2,7 @@ import mongoose from 'mongoose'
 import { HTTP400Error } from '../../utils/httpErrors'
 import { validateAuthCredentials } from '../../utils/validation'
 
-const User = mongoose.model('User')
+const User = mongoose.model('User');
 
 export default [
     {
