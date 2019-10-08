@@ -4,7 +4,7 @@ import Joi from '@hapi/joi';
  * Validate data needed to created an instance of a User
  * @param {Object} data - data representing a User object 
  */
-export const validateCreateUser = (data) => {
+export const validateCreateUser = data => {
     const schema = Joi.object().keys({
         username: Joi.string().alphanum().min(3).max(45).required(),
         email: Joi.string().email({ minDomainSegments: 2 }).required(),
@@ -13,17 +13,33 @@ export const validateCreateUser = (data) => {
     })
 
     return Joi.validate(data, schema)
-}
+};
 
 /**
  * Validate data needed to generate a User's auth token
  * @param {Object} data - a users login credentials
  */
-export const validateAuthCredentials = (data) => {
+export const validateAuthCredentials = data => {
     const schema = Joi.object().keys({
         username: Joi.string().alphanum().min(3).max(45).required(),
         password: Joi.string().regex(/^[a-zA-Z0-9]{3,30}$/).required(),
     })
 
     return Joi.validate(data, schema)
-}
+};
+
+/**
+ * Validate data needed to create and update a Course
+ * @param {Object} data - course data
+ */
+export const validateCreateUpdateCourse = data => {
+
+};
+
+/**
+ * Validate data needed to create and update a Review
+ * @param {Object} data - review data
+ */
+export const validateCreateUpdateReview = data => {
+
+};

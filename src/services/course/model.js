@@ -42,5 +42,19 @@ const CourseSchema = new Schema({
       ]
 }, { timestamps: true });
 
+/**
+ * Check to see which user owns a course before modifying a course document and
+ * to prevent course owner from posting reviews on their own course.
+ * @param {String} userId - ID of the user attempting to modify the document
+ * @return {Boolean}
+ */
+CourseSchema.methods.userOwnsCourse = function(userId){
+  return this.user.toString() === userId;
+}
+
+//TODO agrregate top 10 courses once reviews are enabled
+CourseSchema.statics.getTopRated = function(){
+  return this.aggregate([]);
+}
 
 export default mongoose.model('Course', CourseSchema);

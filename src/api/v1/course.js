@@ -13,4 +13,6 @@ router.get('/:id', isValidMongoID, CourseController.getCourse);
 
 router.put('/:id', auth, isValidMongoID, CourseController.updateCourse);
 
+router.get('/top-rated', CourseController.getTop10CoursesList);
+
 export default router;
