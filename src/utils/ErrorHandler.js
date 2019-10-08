@@ -4,7 +4,7 @@ import {
 } from './httpErrors'
 
 export const notFoundError = () => {
-    throw new HTTP404Error('Route not found')
+    throw new HTTP404Error('Route not found');
 }
 
 /**
@@ -16,12 +16,11 @@ export const notFoundError = () => {
  */
 export const clientError = (err, res, next) => {
     if (err instanceof HTTPClientError) {
-        console.warn(err)
         res
           .status(err.statusCode)
-          .json({ error: err.message })
+          .json({ error: err.message });
     } else {
-        next(err)
+        next(err);
     }
 }
 
@@ -37,13 +36,13 @@ export const serverError = (err, res, next) => {
     if (process.env.NODE_ENV == 'production'){
         res
           .status(500)
-          .json({ error: 'Internal server error.' })
+          .json({ error: 'Internal server error.' });
     } else {
         res
           .status(500)
           .json({ 
               error: 'Server error.',
               stackTrace: err.stack
-           })
+           });
     }
 }

@@ -11,17 +11,13 @@ const ReviewSchema = new Schema({
         ref: 'Course',
         required: [true, 'A review must belong to a specific course.']
       },
-      postedOn: {
-        type: Date,
-        default: Date.now
-      },
       rating: {
         type: Number,
         required: [true, 'Please leave a rating.'],
         min: [1, '1 is the lowest possible rating.'],
         max: [5, '5 is the highest possible rating.']
       },
-      review: {
+      description: {
         type: String,
         trim: true
       }
