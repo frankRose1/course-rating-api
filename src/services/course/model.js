@@ -52,9 +52,39 @@ CourseSchema.methods.userOwnsCourse = function(userId){
   return this.user.toString() === userId;
 }
 
-//TODO agrregate top 10 courses once reviews are enabled
+
 CourseSchema.statics.getTopRated = function(){
-  return this.aggregate([]);
+  return this.aggregate([
+    {
+      $lookup: {
+        from: 'reviews',
+        localField: '_id',
+        foreignField: 'course',
+        as: 'topReviews'
+      }
+    },
+    // match where [1] index exists (at least 2 reviews)
+    {
+      $match: { 'topReviews.1': { $exists: true } }
+    },
+    // add "averageRating" field to the courses and grab a few fields from the model
+    {
+      $project: {
+        averageRating: { $avg: '$topReviews.rating' },
+        title: '$$ROOT.title',
+        description: '$$ROOT.description',
+        estimatedTime: '$$ROOT.estimatedTime'
+      }
+    },
+    // sort by the new "averageRating" field
+    {
+      $sort: { averageRating: -1 }
+    },
+    // limit the results to 10
+    {
+      $limit: 10
+    }
+  ]);
 }
 
 export default mongoose.model('Course', CourseSchema);

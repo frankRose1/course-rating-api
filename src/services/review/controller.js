@@ -31,19 +31,17 @@ export const createReview  = async (req, res) => {
     throw new HTTP400Error(error.details);
   }
 
-  const reviewData = {
-    ...value,
-    user: userId,
-    course: courseId
-  };
-
   const existingReview = await Review.findOne({ course: courseId, user: userId });
 
   if (existingReview) {
     throw new HTTP403Error('User has already left a review on this course.');;
   }
 
-  const review = new Review(reviewData);
+  const review = new Review({
+    ...value,
+    user: userId,
+    course: courseId
+  });
   await review.save();
 
   res.location(`/api/v1/courses/${course._id}`).sendStatus(201);
