@@ -7,8 +7,8 @@ import courseRoutesV1 from './v1/course';
 import reviewRoutesV1 from './v1/review';
 
 export default [
-    { prefix: '/api/auth', authRoutes },
-    { prefix: '/api/v1/users', userRoutesV1 },
-    { prefix: '/api/v1/courses', courseRoutesV1 },
-    { prefix: '/api/v1/reviews', reviewRoutesV1 }
-]
+    { prefix: '/api/auth', endpoints: authRoutes },
+    { prefix: '/api/v1/users', endpoints: userRoutesV1 },
+    { prefix: '/api/v1/courses', endpoints: courseRoutesV1 },
+    { prefix: '/api/v1/reviews', endpoints: reviewRoutesV1 }
+];
