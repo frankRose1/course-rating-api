@@ -10,7 +10,13 @@ const Course = mongoose.model('Course');
 const Review = mongoose.model('Review');
 const COURSE_NOT_FOUND = 'Course not found.'
 
-export const getCoursesList = async (req, res) => {};
+export const getCoursesList = async (req, res) => {
+    const courses = await Course
+        .find({})
+        .select('_id title createdAt')
+        .sort({ createdAt: -1 });
+    res.json({ courses });
+};
 
 export const getTop10CoursesList = async (req, res) => {
     const courses = await Course.getTopRated();
