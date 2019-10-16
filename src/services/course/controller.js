@@ -11,10 +11,18 @@ const Review = mongoose.model('Review');
 const COURSE_NOT_FOUND = 'Course not found.'
 
 export const getCoursesList = async (req, res) => {
+    const pageSize = req.query.pageSize > 20 ? 20 : req.query.pageSize;
+    const pageNum = req.query.pageNum > 0 ? req.query.pageNum : 1;
+
+    const skip = pageSize * (pageNum - 1);
+
     const courses = await Course
         .find({})
-        .select('_id title createdAt')
-        .sort({ createdAt: -1 });
+        .select('_id title createdAt estimatedTime')
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(pageSize);
+
     res.json({ courses });
 };
 

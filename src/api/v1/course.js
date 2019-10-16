@@ -1,12 +1,13 @@
 import { Router } from 'express';
 import auth from '../../middleware/auth';
 import isValidMongoID from '../../middleware/isValidMongoID';
+import checkPagination from '../../middleware/checkPagination';
 import * as CourseController from '../../services/course/controller';
 import { createReview } from '../../services/review/controller';
 
 const router = Router();
 
-router.get('/', CourseController.getCoursesList);
+router.get('/', checkPagination, CourseController.getCoursesList);
 
 router.post('/', auth, CourseController.createCourse);
 
