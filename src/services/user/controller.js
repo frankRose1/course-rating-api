@@ -39,7 +39,7 @@ export const createUser = async (req, res) => {
     await user.save();
     res
       .location('/api/auth')
-      .sendStatus(201)
+      .sendStatus(201);
 };
 
 export const getUser = async (req, res) => {

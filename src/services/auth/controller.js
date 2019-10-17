@@ -16,13 +16,13 @@ export const createAuthToken = async (req, res) => {
     const user = await User.findOne({ username });
 
     if (!user) {
-        throw new HTTP400Error('Invalid username or password');
+        throw new HTTP400Error('Invalid username or password.');
     }
 
-    const isValidPassword = user.authenticate(password);
+    const isValidPassword = await user.authenticate(password);
 
     if (!isValidPassword) {
-        throw new HTTP400Error('Invalid username or password');
+        throw new HTTP400Error('Invalid username or password.');
     }
 
     const token = user.generateAuthToken();

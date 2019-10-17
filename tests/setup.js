@@ -50,12 +50,12 @@ export const setupDB = dbName => {
     // Connect to mongodb
     beforeAll(async () => {
         const mongo_uri = `${base_uri}/${dbName}?authSource=admin`;
-        await mongoose.connect(mongo_uri, { useNewUrlParser: true, useCreateIndex: true })
+        await mongoose.connect(mongo_uri, { useNewUrlParser: true, useCreateIndex: true });
     })
 
     // Clean up database between each test
     afterEach(async () => {
-        await removeAllCollections()
+        await removeAllCollections();
     })
 
     // Drop collections, disconnect mongoose, disconnect redis
@@ -64,6 +64,6 @@ export const setupDB = dbName => {
         await Promise.all([
             mongoose.connection.close(),
             client.quit()
-        ])
+        ]);
     })
 }

@@ -8,7 +8,7 @@ export const validateCreateUser = data => {
     const schema = Joi.object().keys({
         username: Joi.string().alphanum().min(3).max(45).required(),
         email: Joi.string().email({ minDomainSegments: 2 }).required(),
-        name: Joi.string().alphanum().min(2).max(200).required(),
+        name: Joi.string().min(2).max(200).required(),
         password: Joi.string().regex(/^[a-zA-Z0-9]{3,30}$/).required(),
     });
 

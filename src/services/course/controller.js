@@ -8,7 +8,7 @@ import {
 
 const Course = mongoose.model('Course');
 const Review = mongoose.model('Review');
-const COURSE_NOT_FOUND = 'Course not found.'
+const COURSE_NOT_FOUND = 'Course not found.';
 
 export const getCoursesList = async (req, res) => {
     const pageSize = req.query.pageSize > 20 ? 20 : req.query.pageSize;
