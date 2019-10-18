@@ -25,7 +25,7 @@ export const createReview  = async (req, res) => {
     throw new HTTP403Error('You can\'t leave a review on your own course.')
   }
 
-  const { error, value } = validateCreateUpdateReview;
+  const { error, value } = validateCreateUpdateReview(req.body);
 
   if (error) {
     throw new HTTP400Error(error.details);
@@ -34,7 +34,7 @@ export const createReview  = async (req, res) => {
   const existingReview = await Review.findOne({ course: courseId, user: userId });
 
   if (existingReview) {
-    throw new HTTP403Error('User has already left a review on this course.');;
+    throw new HTTP403Error('You can\'t review the same course twice.');
   }
 
   const review = new Review({
@@ -44,42 +44,46 @@ export const createReview  = async (req, res) => {
   });
   await review.save();
 
-  res.location(`/api/v1/courses/${course._id}`).sendStatus(201);
+  res
+    .location(`/api/v1/courses/${course._id}`)
+    .sendStatus(201);
 };
 
 export const getReview = async (req, res) => {
-    const review = await Review.findById(req.params.id)
-    .populate('user', '-_id username name avatar')
-    .populate('course', 'title estimatedTime');
+  const review = await Review.findById(req.params.id)
+  .populate('user', '-_id username name avatar')
+  .populate('course', 'title estimatedTime');
 
-    if (!review) {
-        throw new HTTP404Error('Review not found.');
-    }
+  if (!review) {
+      throw new HTTP404Error('Review not found.');
+  }
 
-    res.json({ review });
+  res.json({ review });
 };
 
 export const updateReview = async (req, res) => {
-    const review = await Review.findById(req.params.id);
-    
-    if (!review) {
-      throw new HTTP404Error('Review not found.');
-    }
+  const review = await Review.findById(req.params.id);
+  
+  if (!review) {
+    throw new HTTP404Error('Review not found.');
+  }
 
-    const hasPermission = review.hasPermission(req.user.id);
-    
-    if (!hasPermission) {
-      throw new HTTP403Error('Only the review author can make updates.')
-    }
+  const hasPermission = review.hasPermission(req.user.id);
+  
+  if (!hasPermission) {
+    throw new HTTP403Error('Only the review author can make updates.')
+  }
 
-    const { error, value } = validateCreateUpdateReview(req.body);
+  const { error, value } = validateCreateUpdateReview(req.body);
 
-    if (error) {
-      throw new HTTP400Error(error.details);
-    }
+  if (error) {
+    throw new HTTP400Error(error.details);
+  }
 
-    review.rating = value.rating;
-    review.description = value.description;
-    await review.save();
-    res.location(`/api/v1/reviews/${review._id}`).sendStatus(204);
+  review.rating = value.rating;
+  review.description = value.description;
+  await review.save();
+  res
+    .location(`/api/v1/reviews/${review._id}`)
+    .sendStatus(204);
 };

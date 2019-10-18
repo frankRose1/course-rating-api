@@ -1,5 +1,10 @@
 import Joi from '@hapi/joi';
 
+const validateOptions = {
+    abortEarly: false,
+    stripUnknown: true
+};
+
 /**
  * Validate data needed to created an instance of a User
  * @param {Object} data - data representing a User object 
@@ -12,7 +17,7 @@ export const validateCreateUser = data => {
         password: Joi.string().regex(/^[a-zA-Z0-9]{3,30}$/).required(),
     });
 
-    return Joi.validate(data, schema)
+    return Joi.validate(data, schema, validateOptions)
 };
 
 /**
@@ -25,7 +30,7 @@ export const validateAuthCredentials = data => {
         password: Joi.string().regex(/^[a-zA-Z0-9]{3,30}$/).required(),
     });
 
-    return Joi.validate(data, schema);
+    return Joi.validate(data, schema, validateOptions);
 };
 
 /**
@@ -45,7 +50,7 @@ export const validateCreateUpdateCourse = data => {
         })
     });
 
-    return Joi.validate(data, schema);
+    return Joi.validate(data, schema, validateOptions);
 };
 
 /**
@@ -58,5 +63,5 @@ export const validateCreateUpdateReview = data => {
         description: Joi.string().min(10).max(1000),
     });
 
-    return Joi.validate(data, schema);
+    return Joi.validate(data, schema, validateOptions);
 };
