@@ -11,8 +11,9 @@ const Review = mongoose.model('Review');
 const COURSE_NOT_FOUND = 'Course not found.';
 
 export const getCoursesList = async (req, res) => {
-    const pageSize = req.query.pageSize > 20 ? 20 : req.query.pageSize;
-    const pageNum = req.query.pageNum > 0 ? req.query.pageNum : 1;
+    let { pageSize, pageNum } = req.query;
+    pageSize = Number(req.query.pageSize) > 20 ? 20 : Number(req.query.pageSize);
+    pageNum = Number(req.query.pageNum) > 0 ? Number(req.query.pageNum) : 1;
 
     const skip = pageSize * (pageNum - 1);
 
@@ -53,7 +54,9 @@ export const createCourse = async (req, res) => {
 };
 
 export const getCourse = async (req, res) => {
-    const coursePromise = Course.findById(id).populate('user', '-_id name username avatar');
+    const coursePromise = Course
+        .findById(req.params.id)
+        .populate('user', '-_id name username avatar');
     const reviewsPromise = Review
         .find({ course: req.params.id })
         .select('rating description user createdAt')

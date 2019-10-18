@@ -3,7 +3,6 @@ import { createApp } from '../../src/app';
 import { setupDB } from '../setup';
 import User from '../../src/services/user/model';
 
-// an example of how you could test api endpoints
 describe('/api/v1/users', () => {
     let app;
     let user;
