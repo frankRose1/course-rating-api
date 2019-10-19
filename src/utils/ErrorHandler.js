@@ -4,7 +4,7 @@ import {
 } from './httpErrors'
 
 export const notFoundError = () => {
-    throw new HTTP404Error('Route not found');
+    throw new HTTP404Error('Route not found.');
 }
 
 /**

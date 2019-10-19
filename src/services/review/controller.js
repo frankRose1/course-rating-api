@@ -55,7 +55,7 @@ export const getReview = async (req, res) => {
   .populate('course', 'title estimatedTime');
 
   if (!review) {
-      throw new HTTP404Error('Review not found.');
+    throw new HTTP404Error('Review not found.');
   }
 
   res.json({ review });

@@ -6,11 +6,11 @@ import { HTTP400Error } from '../utils/httpErrors';
  * to prevent "castToObjectID" errors
  */
 export default (req, res, next) => {
-    const { id } = req.params;
+  const { id } = req.params;
 
-        if (!mongoose.Types.ObjectId.isValid(id)){
-            throw new HTTP400Error('The provided object ID is invalid.')
-        }
+  if (!mongoose.Types.ObjectId.isValid(id)){
+      throw new HTTP400Error('The provided object ID is invalid.')
+  }
 
-    next();
-}
+  next();
+};
