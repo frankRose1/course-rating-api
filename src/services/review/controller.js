@@ -50,15 +50,27 @@ export const createReview  = async (req, res) => {
 };
 
 export const getReview = async (req, res) => {
-  const review = await Review.findById(req.params.id)
-  .populate('user', '-_id username name avatar')
-  .populate('course', 'title estimatedTime');
+  const { id: reviewId } = req.params;
+  const { redis } = req;
+  const redisKey = `review:${reviewId}`;
 
-  if (!review) {
-    throw new HTTP404Error('Review not found.');
+  let review = await redis.getAsync(redisKey);
+
+  if (review) {
+    return res.json({ review: JSON.parse(review) });
+  } else {
+    review = await Review.findById(req.params.id)
+      .populate('user', '-_id username name avatar')
+      .populate('course', 'title estimatedTime');
+
+      if (!review) {
+        throw new HTTP404Error('Review not found.');
+      }
+
+      await redis.setexAsync(redisKey, 3600, JSON.stringify(review));
+
+      res.json({ review });
   }
-
-  res.json({ review });
 };
 
 export const updateReview = async (req, res) => {

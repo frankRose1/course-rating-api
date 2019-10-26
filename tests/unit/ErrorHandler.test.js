@@ -1,6 +1,5 @@
 import * as ErrorHandler from '../../src/utils/ErrorHandler';
 import {
-  HTTP400Error,
   HTTP404Error
 } from '../../src/utils/httpErrors';
 

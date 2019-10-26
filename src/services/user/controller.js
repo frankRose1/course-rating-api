@@ -43,13 +43,25 @@ export const createUser = async (req, res) => {
 };
 
 export const getUser = async (req, res) => {
-  const user = await User
-    .findById(req.user._id)
-    .select('-_id name username email avatar');
+  const userId = req.user._id;
+  const { redis } = req;
+  const redisKey = `user:${userId}`;
 
-  if (!user) {
-    throw new HTTP400Error('User not found.');
+  let user = await redis.getAsync(redisKey);
+
+  if (user) {
+    return res.json({ user: JSON.parse(user) })
+  } else {
+    user =  await User
+      .findById(userId)
+      .select('-_id name username email avatar');
+
+    await redis.setexAsync(redisKey, 3600, JSON.stringify(user));
+
+    if (!user) {
+      throw new HTTP400Error('User not found.');
+    }
+
+    return res.json({ user });
   }
-
-  res.json({ user });
 };

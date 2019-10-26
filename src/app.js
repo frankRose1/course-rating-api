@@ -6,8 +6,8 @@ import './services/review/model';
 import routes from './api';
 import errorHandlers from './middleware/errorHandlers';
 import {
-    applyMiddleware,
-    applyRoutes
+  applyMiddleware,
+  applyRoutes
 } from './utils'
 
 /**
@@ -16,11 +16,11 @@ import {
  * @return {Object} express app instance
  */
 export const createApp = () => {
-    const app = express();
-    applyMiddleware(middleware, app);
-    applyRoutes(routes, app);
-    applyMiddleware(errorHandlers, app);
-    return app
+  const app = express();
+  applyMiddleware(middleware, app);
+  applyRoutes(routes, app);
+  applyMiddleware(errorHandlers, app);
+  return app
 }
 
 export default createApp();
