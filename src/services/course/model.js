@@ -1,46 +1,54 @@
 import mongoose, { Schema } from 'mongoose';
 
-const CourseSchema = new Schema({
+const CourseSchema = new Schema(
+  {
     title: {
-        type: String,
-        trim: true,
-        required: [true, 'You must provide a course title.']
-      },
-      user: {
-        type: Schema.ObjectId,
-        ref: 'User',
-        required: [true, 'A logged in user is required to create a course.']
-      },
-      description: {
-        type: String,
-        required: [true, 'Please provide a course description.'],
-        trim: true
-      },
-      estimatedTime: {
-        type: String,
-        required: [true, 'Please provide an estimated time of course completion.'],
-        trim: true
-      },
-      materialsNeeded: {
-        type: String,
-        trim: true
-      },
-      steps: [
-        {
-          stepNumber: Number,
-          title: {
-            type: String,
-            required: [true, 'Please provide a step title.'],
-            trim: true
-          },
-          description: {
-            type: String,
-            required: [true, 'Please provide a step description.'],
-            trim: true
-          }
+      type: String,
+      trim: true,
+      required: true
+    },
+    user: {
+      type: Schema.ObjectId,
+      ref: 'User',
+      required: true
+    },
+    category: {
+      type: Schema.ObjectId,
+      ref: 'Category',
+      required: true
+    },
+    description: {
+      type: String,
+      required: true,
+      trim: true
+    },
+    estimatedTime: {
+      type: String,
+      required: true,
+      trim: true
+    },
+    materialsNeeded: {
+      type: String,
+      trim: true
+    },
+    steps: [
+      {
+        stepNumber: Number,
+        title: {
+          type: String,
+          required: true,
+          trim: true
+        },
+        description: {
+          type: String,
+          required: true,
+          trim: true
         }
-      ]
-}, { timestamps: true });
+      }
+    ]
+  },
+  { timestamps: true }
+);
 
 /**
  * Check to see which user owns a course before modifying a course document and
@@ -48,15 +56,15 @@ const CourseSchema = new Schema({
  * @param {ObjectId} userId - ID of the user attempting to modify the document
  * @return {Boolean}
  */
-CourseSchema.methods.userOwnsCourse = function(userId){
+CourseSchema.methods.userOwnsCourse = function(userId) {
   return this.user.toString() === userId.toString();
-}
+};
 
 /**
  * Aggregate the top 10 courses in the database. Courses will need to have
  * at least 2 reviews to be considered.
  */
-CourseSchema.statics.getTopRated = function(){
+CourseSchema.statics.getTopRated = function() {
   return this.aggregate([
     {
       $lookup: {
@@ -88,6 +96,6 @@ CourseSchema.statics.getTopRated = function(){
       $limit: 10
     }
   ]);
-}
+};
 
 export default mongoose.model('Course', CourseSchema);

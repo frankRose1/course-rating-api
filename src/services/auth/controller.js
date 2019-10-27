@@ -5,27 +5,27 @@ import { validateAuthCredentials } from '../../utils/validation';
 const User = mongoose.model('User');
 
 export const createAuthToken = async (req, res) => {
-    const { error, value } = validateAuthCredentials(req.body);
+  const { error, value } = validateAuthCredentials(req.body);
 
-    if (error) {
-        throw new HTTP400Error(error.details);
-    }
+  if (error) {
+    throw new HTTP400Error(error.details);
+  }
 
-    const { username, password } = value;
+  const { username, password } = value;
 
-    const user = await User.findOne({ username });
+  const user = await User.findOne({ username });
 
-    if (!user) {
-        throw new HTTP400Error('Invalid username or password.');
-    }
+  if (!user) {
+    throw new HTTP400Error('Invalid username or password.');
+  }
 
-    const isValidPassword = await user.authenticate(password);
+  const isValidPassword = await user.authenticate(password);
 
-    if (!isValidPassword) {
-        throw new HTTP400Error('Invalid username or password.');
-    }
+  if (!isValidPassword) {
+    throw new HTTP400Error('Invalid username or password.');
+  }
 
-    const token = user.generateAuthToken();
+  const token = user.generateAuthToken();
 
-    res.json({ token });
+  res.json({ token });
 };

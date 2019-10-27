@@ -12,25 +12,25 @@ import client from '../databases/redisClient';
  * @param {Object} app - Express application
  */
 export const handleCors = app => {
-    app.use(cors({credentials: true, origin: true}))
-}
+  app.use(cors({credentials: true, origin: true}));
+};
 
 /**
  * Apply body parsing middleware to application
  * @param {Object} app - Express application
  */
 export const handleBodyRequestParsing = app => {
-    app.use(parser.urlencoded({ extended: true }))
-    app.use(parser.json())
-}
+  app.use(parser.urlencoded({ extended: true }));
+  app.use(parser.json());
+};
 
 /**
  * Apply compression middlware to the express app
  * @param {Object} app - Express application
  */
 export const handleCompression = app => {
-    app.use(compression())
-}
+  app.use(compression());
+};
 
 /**
  * Add the redis client to middleware so that it can be
@@ -38,8 +38,8 @@ export const handleCompression = app => {
  * @param {Object} app - express app 
  */
 export const handleRedisCache = app => {
-    app.use((req, res, next) => {
-        req.redis = client
-        next()
-    })
-}
+  app.use((req, res, next) => {
+    req.redis = client;
+    next();
+  });
+};

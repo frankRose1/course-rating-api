@@ -1,10 +1,10 @@
 import {
-    HTTPClientError,
-    HTTP404Error
+  HTTPClientError,
+  HTTP404Error
 } from './httpErrors'
 
 export const notFoundError = () => {
-    throw new HTTP404Error('Route not found.');
+  throw new HTTP404Error('Route not found.');
 }
 
 /**
@@ -15,13 +15,13 @@ export const notFoundError = () => {
  * @param {Function} next - next functionn from express
  */
 export const clientError = (err, res, next) => {
-    if (err instanceof HTTPClientError) {
-        res
-          .status(err.statusCode)
-          .json({ error: err.message });
-    } else {
-        next(err);
-    }
+  if (err instanceof HTTPClientError) {
+    res
+      .status(err.statusCode)
+      .json({ error: err.message });
+  } else {
+    next(err);
+  }
 }
 
 /**
@@ -32,17 +32,17 @@ export const clientError = (err, res, next) => {
  * @param {Function} next - next functionn from express
  */
 export const serverError = (err, res, next) => {
-    console.error(err)
-    if (process.env.NODE_ENV == 'production'){
-        res
-          .status(500)
-          .json({ error: 'Internal server error.' });
-    } else {
-        res
-          .status(500)
-          .json({ 
-              error: 'Server error.',
-              stackTrace: err.stack
-           });
-    }
+  console.error(err);
+  if (process.env.NODE_ENV == 'production'){
+    res
+      .status(500)
+      .json({ error: 'Internal server error.' });
+  } else {
+    res
+      .status(500)
+      .json({ 
+          error: 'Server error.',
+          stackTrace: err.stack
+      });
+  }
 }

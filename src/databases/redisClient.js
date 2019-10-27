@@ -10,7 +10,7 @@ bluebird.promisifyAll(redis.Multi.prototype);
 const client = redis.createClient(REDIS_URL);
 
 client.on('error', err => {
-    console.log(`Error connecting to redis: ${err}`)
+  console.log(`Error connecting to redis: ${err}`)
 });
 
 export default client;

@@ -20,7 +20,7 @@ const testUser2 = {
   username: 'testUser2',
   password: 'password'
 };
-  
+
 const testCourse = {
   title: 'First Test Course',
   user: testUser._id,
@@ -61,19 +61,19 @@ describe('/api/v1/reviews', () => {
 
   setupDB('review-api-test');
 
-  beforeEach(async ()=>{
+  beforeEach(async () => {
     app = createApp();
     user = new User(testUser);
     user2 = new User(testUser2);
-    await Promise.all([ user.save(), user2.save() ]);
+    await Promise.all([user.save(), user2.save()]);
     course = await new Course(testCourse).save();
-    review = await new Review(testReview).save()
+    review = await new Review(testReview).save();
     token = user.generateAuthToken();
     token2 = user2.generateAuthToken();
   });
 
   describe('GET /:id', () => {
-    it('should return a 404 if a review doesn\'t exist', async () => {
+    it("should return a 404 if a review doesn't exist", async () => {
       const res = await request(app).get(`/api/v1/reviews/${Types.ObjectId()}`);
       expect(res.status).toBe(404);
       expect(res.body.error).toBe('Review not found.');
@@ -100,7 +100,7 @@ describe('/api/v1/reviews', () => {
       expect(res.body.error).toBe('Unauthorized. No token provided.');
     });
 
-    it('should return a 404 if review doesn\'t exist', async () => {
+    it("should return a 404 if review doesn't exist", async () => {
       const res = await request(app)
         .put(`/api/v1/reviews/${Types.ObjectId()}`)
         .set('x-auth-token', token)
@@ -140,10 +140,7 @@ describe('/api/v1/reviews', () => {
         .set('x-auth-token', token)
         .send(payload);
       expect(res.status).toBe(204);
-      expect(res.headers.location).toBe(`/api/v1/reviews/${review._id}`)
+      expect(res.headers.location).toBe(`/api/v1/reviews/${review._id}`);
     });
-
   });
-
-
 });

@@ -6,40 +6,40 @@ import { HTTP400Error } from '../../utils/httpErrors';
 const User = mongoose.model('User');
 
 export const createUser = async (req, res) => {
-    const { error, value } = validateCreateUser(req.body);
+  const { error, value } = validateCreateUser(req.body);
 
-    if (error) {
-        throw new HTTP400Error(error.details);
-    }
+  if (error) {
+    throw new HTTP400Error(error.details);
+  }
 
-    const usernameExists = await User.findOne({ username: value.username });
+  const usernameExists = await User.findOne({ username: value.username });
 
-    if (usernameExists) {
-      throw new HTTP400Error('Username is already taken.');
-    }
+  if (usernameExists) {
+    throw new HTTP400Error('Username is already taken.');
+  }
 
-    const emailExists = await User.findOne({ email: value.email });
+  const emailExists = await User.findOne({ email: value.email });
 
-    if (emailExists) {
-      throw new HTTP400Error('Email is already in use.');
-    }
+  if (emailExists) {
+    throw new HTTP400Error('Email is already in use.');
+  }
 
-    const avatar = gravatar.url(value.email, {
-        r: 'pg', //Rating,
-        s: '200', //Size
-        d: 'mm' //Default photo
-      });
+  const avatar = gravatar.url(value.email, {
+    r: 'pg', //Rating,
+    s: '200', //Size
+    d: 'mm' //Default photo
+  });
 
-    const data = {
-        ...value,
-        avatar 
-    };
+  const data = {
+    ...value,
+    avatar 
+  };
 
-    const user = new User(data);
-    await user.save();
-    res
-      .location('/api/auth')
-      .sendStatus(201);
+  const user = new User(data);
+  await user.save();
+  res
+    .location('/api/auth')
+    .sendStatus(201);
 };
 
 export const getUser = async (req, res) => {
@@ -56,12 +56,12 @@ export const getUser = async (req, res) => {
       .findById(userId)
       .select('-_id name username email avatar');
 
-    await redis.setexAsync(redisKey, 3600, JSON.stringify(user));
-
     if (!user) {
       throw new HTTP400Error('User not found.');
     }
 
-    return res.json({ user });
+    await redis.setexAsync(redisKey, 3600, JSON.stringify(user));
+
+    res.json({ user });
   }
 };
