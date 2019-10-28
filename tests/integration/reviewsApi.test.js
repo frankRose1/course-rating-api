@@ -5,6 +5,7 @@ import { setupDB } from '../setup';
 import Course from '../../src/services/course/model';
 import Review from '../../src/services/review/model';
 import User from '../../src/services/user/model';
+import Category from '../../src/services/category/model';
 
 const testUser = {
   name: 'John Smith',
@@ -21,26 +22,18 @@ const testUser2 = {
   password: 'password'
 };
 
+const testCategory = {
+  _id: Types.ObjectId(),
+  name: 'Software Development'
+};
+
 const testCourse = {
   title: 'First Test Course',
   user: testUser._id,
   _id: Types.ObjectId(),
   description: 'Lets learn how to test a node app!',
   estimatedTime: '2 hours',
-  materialsNeeded: 'Code editor, testing documentation',
-  steps: [
-    {
-      stepNumber: 1,
-      title: 'Testing your API',
-      description: 'First you will need to install dev dependencies...'
-    },
-    {
-      stepNumber: 2,
-      title: 'Settting up Testing Environment',
-      description:
-        'Environment variables in Node can be used to set up a testing env...'
-    }
-  ]
+  category: testCategory._id
 };
 
 const testReview = {
@@ -56,6 +49,7 @@ describe('/api/v1/reviews', () => {
   let user2;
   let course;
   let review;
+  let category;
   let token;
   let token2;
 
@@ -65,7 +59,8 @@ describe('/api/v1/reviews', () => {
     app = createApp();
     user = new User(testUser);
     user2 = new User(testUser2);
-    await Promise.all([user.save(), user2.save()]);
+    category = new Category(testCategory);
+    await Promise.all([user.save(), user2.save(), category.save()]);
     course = await new Course(testCourse).save();
     review = await new Review(testReview).save();
     token = user.generateAuthToken();

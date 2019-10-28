@@ -1,6 +1,7 @@
 import isValidMongoID from '../../src/middleware/isValidMongoID';
 import checkPagination from '../../src/middleware/checkPagination';
-import { HTTP400Error } from '../../src/utils/httpErrors';
+import admin from '../../src/middleware/admin';
+import { HTTP400Error, HTTP403Error } from '../../src/utils/httpErrors';
 
 const mockIsValidMongoID = () => {
   const req = {
@@ -24,6 +25,17 @@ describe('middleware', () => {
   describe('isValidMongoID', () => {
     it('should throw a HTTP400Error is an invalid ID is provded in params', () => {
       expect(mockIsValidMongoID).toThrowError(HTTP400Error);
+    });
+  });
+
+  describe('admin', () => {
+    it('should throw a HTTP403Error if req.user.role is not "ADMIN"', () => {
+      const req = {
+        user: { role: 'MEMBER' }
+      };
+      const res = {};
+      const next = jest.fn();
+      expect(() => admin(req, res, next)).toThrowError(HTTP403Error);
     });
   });
 

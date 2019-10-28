@@ -3,6 +3,7 @@ import { HTTP400Error, HTTP404Error } from '../../utils/httpErrors';
 import { validateCreateUpdateCategory } from '../../utils/validation';
 
 const Category = mongoose.model('Category');
+const CATEGORY_NOT_FOUND = 'Category not found.';
 
 export const getCategoryList = async (req, res) => {
   let { pageSize, pageNum, searchTerm = null } = req.query;
@@ -36,7 +37,7 @@ export const getCategory = async (req, res) => {
     category = await Category.findById(categoryId);
 
     if (!category) {
-      throw new HTTP404Error('Category not found');
+      throw new HTTP404Error(CATEGORY_NOT_FOUND);
     }
 
     await redis.setexAsync(redisKey, 1800, JSON.stringify(category));
@@ -55,7 +56,7 @@ export const createCategory = async (req, res) => {
   const existingCategory = await Category.findOne({ name: value.name });
 
   if (existingCategory) {
-    throw new HTTP400Error('Category already exists');
+    throw new HTTP400Error('Category already exists.');
   }
 
   const category = new Category(value);
@@ -69,7 +70,7 @@ export const updateCategory = async (req, res) => {
   const category = await Category.findById(req.params.id);
 
   if (!category) {
-    throw new HTTP404Error('Category not found.');
+    throw new HTTP404Error(CATEGORY_NOT_FOUND);
   }
 
   const { error, value } = validateCreateUpdateCategory(req.body);

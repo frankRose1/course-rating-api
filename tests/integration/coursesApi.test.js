@@ -5,6 +5,7 @@ import { setupDB } from '../setup';
 import Course from '../../src/services/course/model';
 import Review from '../../src/services/review/model';
 import User from '../../src/services/user/model';
+import Category from '../../src/services/category/model';
 
 const testUser = {
   name: 'John Smith',
@@ -21,9 +22,15 @@ const testUser2 = {
   password: 'password'
 };
 
+const testCategory = {
+  _id: Types.ObjectId(),
+  name: 'Software Development'
+};
+
 const testCourse1 = {
   title: 'First Test Course',
   user: testUser._id,
+  category: testCategory._id,
   _id: Types.ObjectId(),
   description: 'Lets learn how to test a node app!',
   estimatedTime: '2 hours',
@@ -46,6 +53,7 @@ const testCourse1 = {
 const testCourse2 = {
   title: 'Node & GraphQL',
   user: testUser._id,
+  category: testCategory._id,
   description: "Learn how to start building your API's with Node and GraphQL!",
   estimatedTime: '15 hours',
   steps: [
@@ -64,6 +72,7 @@ describe('/api/v1/courses', () => {
   let user2;
   let course1;
   let course2;
+  let category;
   let token;
   let token2;
 
@@ -73,7 +82,8 @@ describe('/api/v1/courses', () => {
     app = createApp();
     user = new User(testUser);
     user2 = new User(testUser2);
-    await Promise.all([user.save(), user2.save()]);
+    category = new Category(testCategory);
+    await Promise.all([user.save(), user2.save(), category.save()]);
     course1 = new Course(testCourse1);
     course2 = new Course(testCourse2);
     await Promise.all([course1.save(), course2.save()]);
@@ -210,7 +220,9 @@ describe('/api/v1/courses', () => {
       const payload = {
         title: 'Learn To Paint',
         estimatedTime: '20 hours',
-        description: 'Unleash your inner artist with this painting master class'
+        description:
+          'Unleash your inner artist with this painting master class',
+        categoryId: category._id
       };
       const res = await request(app)
         .post('/api/v1/courses')
