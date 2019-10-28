@@ -98,4 +98,8 @@ CourseSchema.statics.getTopRated = function() {
   ]);
 };
 
+CourseSchema.index({
+  title: 'text'
+});
+
 export default mongoose.model('Course', CourseSchema);

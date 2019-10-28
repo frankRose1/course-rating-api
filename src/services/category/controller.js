@@ -5,13 +5,18 @@ import { validateCreateUpdateCategory } from '../../utils/validation';
 const Category = mongoose.model('Category');
 
 export const getCategoryList = async (req, res) => {
-  let { pageSize, pageNum } = req.query;
-  pageSize = Number(req.query.pageSize) > 50 ? 50 : Number(req.query.pageSize);
+  let { pageSize, pageNum, searchTerm = null } = req.query;
+  pageSize = Number(req.query.pageSize) > 30 ? 30 : Number(req.query.pageSize);
   pageNum = Number(req.query.pageNum) > 0 ? Number(req.query.pageNum) : 1;
 
   const skip = pageSize * (pageNum - 1);
+  const query = {};
 
-  const categories = await Category.find({})
+  if (searchTerm) {
+    query['$text'] = { $search: searchTerm };
+  }
+
+  const categories = await Category.find(query)
     .skip(skip)
     .limit(pageSize);
 

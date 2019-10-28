@@ -8,16 +8,29 @@ import {
 
 const Course = mongoose.model('Course');
 const Review = mongoose.model('Review');
+const Category = mongoose.model('Category');
 const COURSE_NOT_FOUND = 'Course not found.';
 
 export const getCoursesList = async (req, res) => {
-  let { pageSize, pageNum } = req.query;
+  //querystring varaibles allow for flexible querying/sorting
+  let { pageSize, pageNum, category = null, searchTerm = null } = req.query;
   pageSize = Number(req.query.pageSize) > 20 ? 20 : Number(req.query.pageSize);
   pageNum = Number(req.query.pageNum) > 0 ? Number(req.query.pageNum) : 1;
 
   const skip = pageSize * (pageNum - 1);
+  const query = {};
 
-  const courses = await Course.find({})
+  // search by the course title
+  if (searchTerm) {
+    query['$text'] = { $search: searchTerm };
+  }
+
+  // filter by the category a course belongs to
+  if (category) {
+    query['category.name'] = { $eq: category };
+  }
+
+  const courses = await Course.find(query)
     .select('_id title createdAt estimatedTime')
     .sort({ createdAt: -1 })
     .skip(skip)
@@ -41,6 +54,13 @@ export const createCourse = async (req, res) => {
     throw new HTTP400Error(error.details);
   }
 
+  // make sure a category exists
+  const category = await Category.findById(value.categoryId);
+
+  if (!category) {
+    throw new HTTP404Error("The category ID you chose doesn't exist.");
+  }
+
   const course = new Course({
     ...value,
     user: req.user._id
@@ -62,10 +82,9 @@ export const getCourse = async (req, res) => {
     const { course, reviews } = JSON.parse(cachedCourse);
     return res.json({ course, reviews });
   } else {
-    const coursePromise = Course.findById(req.params.id).populate(
-      'user',
-      '-_id name username avatar'
-    );
+    const coursePromise = Course.findById(req.params.id)
+      .populate('user', '-_id name username avatar')
+      .populate('category');
 
     const reviewsPromise = Review.find({ course: req.params.id })
       .select('rating description user createdAt')

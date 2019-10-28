@@ -60,6 +60,10 @@ export const validateCreateUpdateCourse = data => {
       .min(5)
       .max(150)
       .required(),
+    categoryId: Joi.string()
+      .min(24)
+      .max(24)
+      .required(),
     description: Joi.string()
       .min(10)
       .max(1000)

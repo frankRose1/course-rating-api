@@ -8,4 +8,8 @@ const CategorySchema = new Schema({
   }
 });
 
+CategorySchema.index({
+  name: 'text'
+});
+
 export default mongoose.model('Category', CategorySchema);
