@@ -1,6 +1,6 @@
 import request from 'supertest';
 import { Types } from 'mongoose';
-import { createApp } from '../../src/app';
+import _app from '../../src/app';
 import { setupDB } from '../setup';
 import User from '../../src/services/user/model';
 import Category from '../../src/services/category/model';
@@ -31,7 +31,7 @@ describe('/api/v1/categories', () => {
   setupDB('category-api-test');
 
   beforeEach(async () => {
-    app = createApp();
+    app = _app;
     user = new User(testUser);
     user2 = new User(testUser2);
     category = new Category({ name: 'Cooking' });
@@ -120,6 +120,78 @@ describe('/api/v1/categories', () => {
       expect(res.body).toHaveProperty('category');
       expect(res.body.category.name).toBe(category.name);
       expect(res.body.category._id).toBe(category._id.toString());
+    });
+  });
+
+  describe('PUT /:id', () => {
+    it('should return a 400 for an invalid ID', async () => {
+      const res = await request(app)
+        .put(`/api/v1/categories/${14214}`)
+        .set('x-auth-token', token)
+        .send({});
+      expect(res.status).toBe(400);
+      expect(res.body.error).toBe('The provided object ID is invalid.');
+    });
+
+    it('should return a 401 if auth headers are missing', async () => {
+      const res = await request(app)
+        .put(`/api/v1/categories/${category._id}`)
+        .set('x-auth-token', '')
+        .send({});
+      expect(res.status).toBe(401);
+      expect(res.body.error).toBe('Unauthorized. No token provided.');
+    });
+
+    it('should return a 403 if user is not an admin', async () => {
+      const res = await request(app)
+        .put(`/api/v1/categories/${category._id}`)
+        .set('x-auth-token', token2)
+        .send({});
+      expect(res.status).toBe(403);
+      expect(res.body.error).toBe(
+        'Admin privileges are required to access this resource.'
+      );
+    });
+
+    it("should return a 404 if a category doesn't exist", async () => {
+      const res = await request(app)
+        .put(`/api/v1/categories/${Types.ObjectId()}`)
+        .set('x-auth-token', token)
+        .send({});
+      expect(res.status).toBe(404);
+    });
+
+    it('should return a 400 for an invalid payload', async () => {
+      const res = await request(app)
+        .put(`/api/v1/categories/${category._id}`)
+        .set('x-auth-token', token)
+        .send({ name: '' });
+      expect(res.status).toBe(400);
+    });
+
+    it('should return a 400 if tryint to update to a name that already exists', async () => {
+      const newCategory = await new Category({
+        name: 'Personal Finance'
+      }).save();
+
+      const res = await request(app)
+        .put(`/api/v1/categories/${category._id}`)
+        .set('x-auth-token', token)
+        .send({ name: newCategory.name });
+      expect(res.status).toBe(400);
+      expect(res.body.error).toBe('Category already exists.');
+    });
+
+    it('should return a 204 for a valid payload and auth token', async () => {
+      const payload = { name: 'New Category' };
+      const res = await request(app)
+        .put(`/api/v1/categories/${category._id}`)
+        .set('x-auth-token', token)
+        .send(payload);
+      const updatedCategory = await Category.findById(category._id);
+      expect(res.status).toBe(204);
+      expect(res.headers.location).toBe(`/api/v1/categories/${category._id}`);
+      expect(updatedCategory.name).toBe(payload.name);
     });
   });
 });

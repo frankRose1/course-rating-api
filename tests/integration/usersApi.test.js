@@ -1,5 +1,5 @@
 import request from 'supertest';
-import { createApp } from '../../src/app';
+import _app from '../../src/app';
 import { setupDB } from '../setup';
 import User from '../../src/services/user/model';
 
@@ -11,7 +11,7 @@ describe('/api/v1/users', () => {
   setupDB('user-api-test');
 
   beforeEach(async () => {
-    app = createApp();
+    app = _app;
     user = new User({
       username: 'testUser1',
       password: 'password',

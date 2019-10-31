@@ -1,6 +1,6 @@
 import request from 'supertest';
 import { Types } from 'mongoose';
-import { createApp } from '../../src/app';
+import _app from '../../src/app';
 import { setupDB } from '../setup';
 import Course from '../../src/services/course/model';
 import Review from '../../src/services/review/model';
@@ -56,7 +56,7 @@ describe('/api/v1/reviews', () => {
   setupDB('review-api-test');
 
   beforeEach(async () => {
-    app = createApp();
+    app = _app;
     user = new User(testUser);
     user2 = new User(testUser2);
     category = new Category(testCategory);

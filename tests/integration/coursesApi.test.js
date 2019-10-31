@@ -1,6 +1,6 @@
 import request from 'supertest';
 import { Types } from 'mongoose';
-import { createApp } from '../../src/app';
+import _app from '../../src/app';
 import { setupDB } from '../setup';
 import Course from '../../src/services/course/model';
 import Review from '../../src/services/review/model';
@@ -79,7 +79,7 @@ describe('/api/v1/courses', () => {
   setupDB('course-api-test');
 
   beforeEach(async () => {
-    app = createApp();
+    app = _app;
     user = new User(testUser);
     user2 = new User(testUser2);
     category = new Category(testCategory);
@@ -169,6 +169,20 @@ describe('/api/v1/courses', () => {
       expect(res.status).toBe(400);
     });
 
+    it('should return a 404 for category that doesnt exist', async () => {
+      const payload = {
+        title: 'Brand New Course',
+        estimatedTime: '6 hours',
+        description: 'Testing testing 123',
+        category: Types.ObjectId()
+      };
+      const res = await request(app)
+        .put(`/api/v1/courses/${course1._id}`)
+        .set('x-auth-token', token)
+        .send(payload);
+      expect(res.status).toBe(404);
+    });
+
     it('should return a 204 and set location headers for valid payload and ID', async () => {
       const payload = {
         ...testCourse2,
@@ -216,13 +230,28 @@ describe('/api/v1/courses', () => {
       expect(res.status).toBe(400);
     });
 
+    it("should return a 404 if a selected category doesn't exist", async () => {
+      const payload = {
+        title: 'Brand New Course',
+        estimatedTime: '6 hours',
+        description: 'Testing testing 123',
+        category: Types.ObjectId()
+      };
+      const res = await request(app)
+        .post('/api/v1/courses')
+        .set('x-auth-token', token)
+        .send(payload);
+      expect(res.status).toBe(404);
+      expect(res.body.error).toBe("The category you chose doesn't exist.");
+    });
+
     it('should return a 201 for a valid payload and auth token', async () => {
       const payload = {
         title: 'Learn To Paint',
         estimatedTime: '20 hours',
         description:
           'Unleash your inner artist with this painting master class',
-        categoryId: category._id
+        category: category._id
       };
       const res = await request(app)
         .post('/api/v1/courses')

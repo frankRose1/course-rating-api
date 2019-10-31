@@ -21,12 +21,4 @@ router.put(
   CategoryController.updateCategory
 );
 
-// router.delete(
-//   '/:id',
-//   isValidMongoID,
-//   auth,
-//   admin,
-//   CategoryController.deleteCategory
-// );
-
 export default router;

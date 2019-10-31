@@ -10,7 +10,7 @@
     "build-babel": "babel -d ./dist ./src -s",
     "build": "npm run clean && npm run build-babel",
     "dev": "nodemon --exec babel-node src/server.js",
-    "test": "jest --coverage"
+    "test": "jest --forceExit --coverage"
   },
   "repository": {
     "type": "git",

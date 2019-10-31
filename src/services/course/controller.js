@@ -55,10 +55,10 @@ export const createCourse = async (req, res) => {
   }
 
   // make sure a category exists
-  const category = await Category.findById(value.categoryId);
+  const category = await Category.findById(value.category);
 
   if (!category) {
-    throw new HTTP404Error("The category ID you chose doesn't exist.");
+    throw new HTTP404Error("The category you chose doesn't exist.");
   }
 
   const course = new Course({
@@ -124,6 +124,12 @@ export const updateCourse = async (req, res) => {
 
   if (error) {
     throw new HTTP400Error(error.details);
+  }
+
+  const category = await Category.findById(value.category);
+
+  if (!category) {
+    throw new HTTP404Error("The category you chose doesn't exist.");
   }
 
   course.set(value);

@@ -1,5 +1,5 @@
 import request from 'supertest';
-import { createApp } from '../../src/app';
+import _app from '../../src/app';
 import { setupDB } from '../setup';
 import User from '../../src/services/user/model';
 
@@ -10,7 +10,7 @@ describe('/api/auth', () => {
   setupDB('auth-api-test');
 
   beforeEach(async () => {
-    app = createApp();
+    app = _app;
     user = new User({
       name: 'Jane Smith',
       username: 'testUser1',
